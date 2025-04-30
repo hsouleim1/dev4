@@ -1,0 +1,27 @@
+# ninja log v6
+2	11	7676466019826409	clean	18985f9f00b1b1db
+3	235	7677409803255543	build.ninja	56a23b24294051b1
+7	147	7677386133001241	CMakeFiles/synth.dir/main.cpp.obj	ae1dc4a42b7f99ab
+12	879	7677324050799327	CMakeFiles/synth.dir/AudioGenerator.cpp.obj	2107863fdd3bee48
+50	509	7677324051179356	CMakeFiles/synth.dir/libraries/imgui/backends/imgui_impl_sdlrenderer3.cpp.obj	5c54329f939bbb97
+11	856	7677384129770414	CMakeFiles/synth.dir/MainWindow.cpp.obj	892f19d74a384f48
+20	1896	7677324050889370	CMakeFiles/synth.dir/libraries/imgui/imgui_demo.cpp.obj	e058ebed082dfb23
+44	1480	7677324051129374	CMakeFiles/synth.dir/libraries/imgui/backends/imgui_impl_sdl3.cpp.obj	86d852bb0aff008b
+38	2001	7677324051059330	CMakeFiles/synth.dir/libraries/imgui/imgui_tables.cpp.obj	25dcb90aca4855bb
+25	2529	7677324050929327	CMakeFiles/synth.dir/libraries/imgui/imgui_draw.cpp.obj	3d9933622e3211b1
+31	2852	7677324050989388	CMakeFiles/synth.dir/libraries/imgui/imgui_widgets.cpp.obj	1cf09523c9212e87
+16	3568	7677324050839318	CMakeFiles/synth.dir/libraries/imgui/imgui.cpp.obj	20968dc0ae0eb2f7
+11	845	7677408156488698	CMakeFiles/votre_projet.dir/MainWindow.cpp.obj	b80a8ad13928c0a1
+6	151	7677408156438735	CMakeFiles/votre_projet.dir/main.cpp.obj	eade96267f103ee1
+54	525	7677403919409641	CMakeFiles/votre_projet.dir/libraries/imgui/backends/imgui_impl_sdlrenderer3.cpp.obj	f994c746a050f2cc
+11	973	7677403918976944	CMakeFiles/votre_projet.dir/AudioGenerator.cpp.obj	9c342d7f7e94f650
+46	1624	7677403919319622	CMakeFiles/votre_projet.dir/libraries/imgui/backends/imgui_impl_sdl3.cpp.obj	4f9a88b0a4a897a2
+20	1984	7677403919069590	CMakeFiles/votre_projet.dir/libraries/imgui/imgui_demo.cpp.obj	a7a6fc2f60e894aa
+40	2065	7677403919259798	CMakeFiles/votre_projet.dir/libraries/imgui/imgui_tables.cpp.obj	d4b61d6b2024d989
+28	2593	7677403919149670	CMakeFiles/votre_projet.dir/libraries/imgui/imgui_draw.cpp.obj	a47e15ed02f0dd2c
+34	2960	7677403919209620	CMakeFiles/votre_projet.dir/libraries/imgui/imgui_widgets.cpp.obj	305b6eff36f9a734
+16	3672	7677403919016980	CMakeFiles/votre_projet.dir/libraries/imgui/imgui.cpp.obj	d23ee6b64cb36ed4
+845	1274	7677408164835995	votre_projet.exe	3d57a663a8d97cf3
+7	164	7677410276436752	CMakeFiles/votre_projet.dir/main.cpp.obj	eade96267f103ee1
+12	834	7677410276496785	CMakeFiles/votre_projet.dir/MainWindow.cpp.obj	b80a8ad13928c0a1
+835	1255	7677410284713386	votre_projet.exe	3d57a663a8d97cf3

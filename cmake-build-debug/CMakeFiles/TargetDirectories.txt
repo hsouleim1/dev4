@@ -1,0 +1,3 @@
+C:/Users/hamza/Downloads/dev4/projSynth/cmake-build-debug/CMakeFiles/votre_projet.dir
+C:/Users/hamza/Downloads/dev4/projSynth/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/hamza/Downloads/dev4/projSynth/cmake-build-debug/CMakeFiles/rebuild_cache.dir
