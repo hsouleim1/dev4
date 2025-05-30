@@ -35,14 +35,11 @@ void MainWindow::run() {
     float delayTime = 0.5f, delayMix = 0.5f;
     const char* waves[] = { "SINE", "SQUARE", "SAW" };
 
-    // Timer pour maintenir la note
-    bool noteActive = false;
-    std::chrono::steady_clock::time_point noteStart;
-
     while (running) {
         while (SDL_PollEvent(&event)) {
             ImGui_ImplSDL3_ProcessEvent(&event);
-            if (event.type == SDL_EVENT_QUIT) running = false;
+            if (event.type == SDL_EVENT_QUIT)
+                running = false;
         }
 
         // MAJ paramètres audio
@@ -50,17 +47,17 @@ void MainWindow::run() {
         AudioGenerator::getInstance().setOsc2(osc2, offset2);
         AudioGenerator::getInstance().setEnvelope(attack, release);
 
-        // Arrêt automatique après 300 ms
+        // Extinction automatique après 0.3s
         if (noteActive) {
             auto now = std::chrono::steady_clock::now();
             float elapsed = std::chrono::duration<float>(now - noteStart).count();
             if (elapsed > 0.3f) {
-                AudioGenerator::getInstance().keyPressed = false;
+                AudioGenerator::getInstance().setKeyPressed(false);
                 noteActive = false;
             }
         }
 
-        // IMGUI
+        // === IMGUI ===
         ImGui_ImplSDL3_NewFrame();
         ImGui_ImplSDLRenderer3_NewFrame();
         ImGui::NewFrame();
@@ -69,14 +66,12 @@ void MainWindow::run() {
         ImGui::Begin("Synthétiseur", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 
         ImGui::Checkbox("OSC 1", &osc1);
-        ImGui::SameLine(150); ImGui::Text("OSC1 Waveform");
+        ImGui::Text("OSC1 Waveform");
         ImGui::Combo("##wave1", &wave1, waves, IM_ARRAYSIZE(waves));
-        ImGui::SameLine(400); ImGui::Text("OSC1 Frequency Offset");
-        ImGui::SliderFloat("##offset1", &offset1, -5, 5, "%.2f");
+        ImGui::Text("OSC1 Frequency Offset");
+        ImGui::SliderFloat("##offset1", &offset1, -5.0f, 5.0f, "%.2f");
 
         ImGui::Checkbox("OSC 2", &osc2);
-        ImGui::SameLine(200); ImGui::Text("Type : SAW");
-        ImGui::SliderFloat("OSC2 Freq Offset", &offset2, -5, 5, "%.2f");
 
         ImGui::Separator();
 
@@ -98,35 +93,16 @@ void MainWindow::run() {
         ImGui::Separator();
 
         ImGui::Text("Clavier virtuel");
-
-        const float noteFrequencies[13] = {
-            261.63f, 277.18f, 293.66f, 311.13f, 329.63f, 349.23f, 369.99f,
-            392.00f, 415.30f, 440.00f, 466.16f, 493.88f, 523.25f
-        };
-
-        static std::chrono::steady_clock::time_point noteStart;
-        static bool noteActive = false;
-
         for (int i = 0; i < 13; ++i) {
             ImGui::PushID(i);
             if (ImGui::Button(std::to_string(i + 1).c_str(), ImVec2(40, 30))) {
-                AudioGenerator::getInstance().keyPressed = true;
+                AudioGenerator::getInstance().setKeyPressed(true);
                 AudioGenerator::getInstance().setNote(i);
                 noteStart = std::chrono::steady_clock::now();
                 noteActive = true;
             }
             if (i < 12) ImGui::SameLine();
             ImGui::PopID();
-        }
-
-        // Extinction auto après 0.3s
-        if (noteActive) {
-            auto now = std::chrono::steady_clock::now();
-            float elapsed = std::chrono::duration<float>(now - noteStart).count();
-            if (elapsed > 0.3f) {
-                AudioGenerator::getInstance().keyPressed = false;
-                noteActive = false;
-            }
         }
 
         ImGui::End();

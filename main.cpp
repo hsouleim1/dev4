@@ -12,7 +12,7 @@ static int audioCallback(const void*, void* outputBuffer,
     const float dt = 1.0f / 44100.0f;  // tu peux remplacer par une constante si tu veux
 
     for (unsigned long i = 0; i < framesPerBuffer; ++i) {
-        float sample = AudioGenerator::getInstance().generateSample(time);
+        float sample = AudioGenerator::getInstance().generateSample();
         time += dt;
         out[2 * i] = sample;
         out[2 * i + 1] = sample;

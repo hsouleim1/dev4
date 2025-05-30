@@ -21,6 +21,7 @@ add_executable(votre_projet
         main.cpp
         MainWindow.cpp
         AudioGenerator.cpp
+        Oscillator.cpp
         libraries/imgui/imgui.cpp
         libraries/imgui/imgui_demo.cpp
         libraries/imgui/imgui_draw.cpp

@@ -1,10 +1,6 @@
 #include "AudioGenerator.h"
 #include <cmath>
-#include <algorithm>
 
-constexpr float PI = 3.14159265f;
-
-// Tableau des fréquences pour 13 notes (DO3 à DO4)
 const float noteFrequencies[13] = {
     261.63f, 277.18f, 293.66f, 311.13f, 329.63f,
     349.23f, 369.99f, 392.00f, 415.30f, 440.00f,
@@ -17,15 +13,12 @@ AudioGenerator& AudioGenerator::getInstance() {
 }
 
 int AudioGenerator::paCallback(const void*, void* output, unsigned long frameCount,
-                                const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void* userData) {
-    float* out = (float*)output;
-    AudioGenerator* gen = (AudioGenerator*)userData;
+                               const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void* userData) {
+    float* out = static_cast<float*>(output);
+    auto* gen = static_cast<AudioGenerator*>(userData);
 
     for (unsigned long i = 0; i < frameCount; ++i) {
-        float t = gen->time;
-        float sample = gen->generateSample(t);
-        gen->time += 1.0f / SAMPLE_RATE;
-
+        float sample = gen->generateSample();
         *out++ = sample;
         *out++ = sample;
     }
@@ -33,60 +26,56 @@ int AudioGenerator::paCallback(const void*, void* output, unsigned long frameCou
     return paContinue;
 }
 
-float AudioGenerator::generateSample(float t) {
-    float freq = noteIndex >= 0 ? noteFrequencies[noteIndex] : 0.0f;
-    float dt = 1.0f / SAMPLE_RATE;
+float AudioGenerator::generateSample() {
+    std::lock_guard<std::mutex> lock(paramMutex);
 
-    float phase1 = 2 * PI * (freq + offset1) * t;
-    float phase2 = 2 * PI * (freq + offset2) * t;
+    if (noteIndex < 0) return 0.0f;
+    float freq = noteFrequencies[noteIndex];
 
-    auto getWaveSample = [](WaveType type, float phase) -> float {
-        switch (type) {
-            case WaveType::SINE:   return std::sin(phase);
-            case WaveType::SQUARE: return std::sin(phase) > 0 ? 1.f : -1.f;
-            case WaveType::SAW:    return 2.f * (phase / (2.f * PI) - std::floor(phase / (2.f * PI) + 0.5f));
-            default: return 0.f;
-        }
-    };
+    osc1.setFrequency(freq + offset1);
+    osc2.setFrequency(freq + offset2);
 
-    float sample = 0.f;
-    if (osc1Active) sample += getWaveSample(wave1, phase1);
-    if (osc2Active) sample += getWaveSample(WaveType::SAW, phase2); // Osc2 est toujours SAW
+    float sample = 0.0f;
+    if (osc1Active) sample += osc1.generate();
+    if (osc2Active) sample += osc2.generate();
 
-    sample *= applyEnvelope(keyPressed, dt);
-    return sample * 0.3f; // volume réduit
+    sample *= envelope.getAmplitude(keyPressed);
+    return sample * 0.3f;
 }
 
-float AudioGenerator::applyEnvelope(bool pressed, float dt) {
-    if (pressed) {
-        amplitude += dt / std::max(attack, 0.001f);
-        amplitude = std::min(amplitude, 1.f);
-    } else {
-        amplitude -= dt / std::max(release, 0.001f);
-        amplitude = std::max(amplitude, 0.f);
-    }
-    return amplitude;
-}
-
-void AudioGenerator::setOsc1(bool active, WaveType type, float off) {
+void AudioGenerator::setOsc1(bool active, WaveType type, float offset) {
+    std::lock_guard<std::mutex> lock(paramMutex);
     osc1Active = active;
-    wave1 = type;
-    offset1 = off;
+    osc1.setType(type);
+    offset1 = offset;
 }
 
-void AudioGenerator::setOsc2(bool active, float off) {
+void AudioGenerator::setOsc2(bool active, float offset) {
+    std::lock_guard<std::mutex> lock(paramMutex);
     osc2Active = active;
-    offset2 = off;
+    offset2 = offset;
+    osc2.setType(WaveType::SAW);
 }
 
-void AudioGenerator::setEnvelope(float atk, float rel) {
-    attack = atk;
-    release = rel;
+void AudioGenerator::setEnvelope(float attack, float release) {
+    std::lock_guard<std::mutex> lock(paramMutex);
+    envelope.setAttackRelease(attack, release);
 }
 
 void AudioGenerator::setNote(int index) {
+    std::lock_guard<std::mutex> lock(paramMutex);
     noteIndex = (index >= 0 && index < 13) ? index : -1;
     keyPressed = (noteIndex != -1);
+}
+
+void AudioGenerator::setKeyPressed(bool pressed) {
+    std::lock_guard<std::mutex> lock(paramMutex);
+    keyPressed = pressed;
+}
+
+bool AudioGenerator::isKeyPressed() {
+    std::lock_guard<std::mutex> lock(paramMutex);
+    return keyPressed;
 }
 
 bool AudioGenerator::init() {
