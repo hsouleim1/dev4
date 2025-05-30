@@ -1,7 +1,6 @@
 #include "Oscillator.h"
 #include <cmath>
 
-constexpr float PI = 3.14159265f;
 
 void Oscillator::setType(WaveType type) {
     waveType = type;

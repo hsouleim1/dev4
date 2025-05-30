@@ -2,10 +2,11 @@
 #include <cmath>
 
 const float noteFrequencies[13] = {
-    261.63f, 277.18f, 293.66f, 311.13f, 329.63f,
-    349.23f, 369.99f, 392.00f, 415.30f, 440.00f,
-    466.16f, 493.88f, 523.25f
+    130.81f, 138.59f, 146.83f, 155.56f, 164.81f,
+    174.61f, 185.00f, 196.00f, 207.65f, 220.00f,
+    233.08f, 246.94f, 261.63f
 };
+
 
 AudioGenerator& AudioGenerator::getInstance() {
     static AudioGenerator instance;
@@ -39,7 +40,10 @@ float AudioGenerator::generateSample() {
     if (osc1Active) sample += osc1.generate();
     if (osc2Active) sample += osc2.generate();
 
+    sample = filter.process(sample);
     sample *= envelope.getAmplitude(keyPressed);
+
+
     return sample * 0.3f;
 }
 
@@ -91,3 +95,17 @@ AudioGenerator::~AudioGenerator() {
     }
     Pa_Terminate();
 }
+
+
+void AudioGenerator::setCutoff(float c) {
+    std::lock_guard<std::mutex> lock(paramMutex);
+    cutoff = c;
+    filter.setCutoff(cutoff);
+}
+
+void AudioGenerator::setResonance(float r) {
+    std::lock_guard<std::mutex> lock(paramMutex);
+    resonance = r;
+    filter.setResonance(resonance);
+}
+

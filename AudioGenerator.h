@@ -6,6 +6,8 @@
 #include "Oscillator.h"
 #include "Envelope.h"
 #include "WaveType.h"
+#include "Filter.h"
+
 
 #include "Constants.h"
 
@@ -18,15 +20,22 @@ public:
     void setOsc1(bool active, WaveType type, float offset);
     void setOsc2(bool active, float offset);
     void setEnvelope(float attack, float release);
+    void setCutoff(float freq);
+    void setResonance(float r);
     void setNote(int index);
     bool init();
 
     void setKeyPressed(bool pressed);
     bool isKeyPressed();
 
+    void setFilter(float cutoff, float resonance);
+
 private:
     AudioGenerator() = default;
     ~AudioGenerator();
+    Filter filter;
+    float cutoff = 1000.f;
+    float resonance = 0.5f;
 
     static int paCallback(const void*, void*, unsigned long,
                           const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void* userData);

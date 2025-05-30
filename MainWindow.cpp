@@ -26,7 +26,6 @@ void MainWindow::run() {
     bool running = true;
     SDL_Event event;
 
-    // UI
     bool osc1 = true, osc2 = false;
     int wave1 = 0;
     float offset1 = 0.f, offset2 = 0.f;
@@ -35,6 +34,9 @@ void MainWindow::run() {
     float delayTime = 0.5f, delayMix = 0.5f;
     const char* waves[] = { "SINE", "SQUARE", "SAW" };
 
+    bool noteActive = false;
+    std::chrono::steady_clock::time_point noteStart;
+
     while (running) {
         while (SDL_PollEvent(&event)) {
             ImGui_ImplSDL3_ProcessEvent(&event);
@@ -42,12 +44,13 @@ void MainWindow::run() {
                 running = false;
         }
 
-        // MAJ paramètres audio
+        // Mise à jour des paramètres audio
         AudioGenerator::getInstance().setOsc1(osc1, (WaveType)wave1, offset1);
         AudioGenerator::getInstance().setOsc2(osc2, offset2);
         AudioGenerator::getInstance().setEnvelope(attack, release);
+        AudioGenerator::getInstance().setCutoff(cutoff);
+        AudioGenerator::getInstance().setResonance(resonance);
 
-        // Extinction automatique après 0.3s
         if (noteActive) {
             auto now = std::chrono::steady_clock::now();
             float elapsed = std::chrono::duration<float>(now - noteStart).count();
@@ -57,7 +60,7 @@ void MainWindow::run() {
             }
         }
 
-        // === IMGUI ===
+        // === Interface ImGui ===
         ImGui_ImplSDL3_NewFrame();
         ImGui_ImplSDLRenderer3_NewFrame();
         ImGui::NewFrame();
