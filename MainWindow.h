@@ -1,16 +1,16 @@
-
-#ifndef TESTINSTRUCT_MAINWINDOW_H
-#define TESTINSTRUCT_MAINWINDOW_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <SDL3/SDL.h>
+
 class MainWindow {
-public :
+public:
     void init();
     void run();
+
 private:
-    void draw();
-    SDL_Window* window { nullptr };
-    SDL_Renderer* renderer { nullptr };
+    SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
 };
 
-#endif //TESTINSTRUCT_MAINWINDOW_H
+#endif
