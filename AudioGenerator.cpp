@@ -1,12 +1,13 @@
 #include "AudioGenerator.h"
 #include <cmath>
+#include <algorithm>
+#include <vector>
 
 const float noteFrequencies[13] = {
     130.81f, 138.59f, 146.83f, 155.56f, 164.81f,
     174.61f, 185.00f, 196.00f, 207.65f, 220.00f,
     233.08f, 246.94f, 261.63f
 };
-
 
 AudioGenerator& AudioGenerator::getInstance() {
     static AudioGenerator instance;
@@ -15,13 +16,13 @@ AudioGenerator& AudioGenerator::getInstance() {
 
 int AudioGenerator::paCallback(const void*, void* output, unsigned long frameCount,
                                const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void* userData) {
-    float* out = static_cast<float*>(output);
+    auto* out = static_cast<float*>(output);
     auto* gen = static_cast<AudioGenerator*>(userData);
 
     for (unsigned long i = 0; i < frameCount; ++i) {
         float sample = gen->generateSample();
-        *out++ = sample;
-        *out++ = sample;
+        out[2 * i] = sample;
+        out[2 * i + 1] = sample;
     }
 
     return paContinue;
@@ -43,6 +44,8 @@ float AudioGenerator::generateSample() {
     sample = filter.process(sample);
     sample *= envelope.getAmplitude(keyPressed);
 
+    delay.setParameters(delayTime, delayMix);
+    sample = delay.process(sample);
 
     return sample * 0.3f;
 }
@@ -96,7 +99,6 @@ AudioGenerator::~AudioGenerator() {
     Pa_Terminate();
 }
 
-
 void AudioGenerator::setCutoff(float c) {
     std::lock_guard<std::mutex> lock(paramMutex);
     cutoff = c;
@@ -109,3 +111,16 @@ void AudioGenerator::setResonance(float r) {
     filter.setResonance(resonance);
 }
 
+void AudioGenerator::setDelayTime(float seconds) {
+    std::lock_guard<std::mutex> lock(paramMutex);
+    delayTime = std::clamp(seconds, 0.1f, 2.0f);
+}
+
+void AudioGenerator::setDelayMix(float mix) {
+    std::lock_guard<std::mutex> lock(paramMutex);
+    delayMix = std::clamp(mix, 0.0f, 1.0f);
+}
+
+void AudioGenerator::setDelay(float time, float mix) {
+    delay.setParameters(time, mix);
+}

@@ -7,6 +7,8 @@
 #include "Envelope.h"
 #include "WaveType.h"
 #include "Filter.h"
+#include "Delay.h"
+
 
 
 #include "Constants.h"
@@ -29,6 +31,11 @@ public:
     bool isKeyPressed();
 
     void setFilter(float cutoff, float resonance);
+    void setDelay(float time, float mix);
+
+    void setDelayTime(float seconds);
+    void setDelayMix(float mix);
+
 
 private:
     AudioGenerator() = default;
@@ -36,6 +43,10 @@ private:
     Filter filter;
     float cutoff = 1000.f;
     float resonance = 0.5f;
+    Delay delay = Delay(SAMPLE_RATE);
+    float delayTime = 0.5f;  // secondes
+    float delayMix = 0.5f;   // entre 0 et 1
+
 
     static int paCallback(const void*, void*, unsigned long,
                           const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void* userData);

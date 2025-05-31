@@ -23,6 +23,7 @@ add_executable(votre_projet
         AudioGenerator.cpp
         Oscillator.cpp
         Filter.cpp
+        Delay.cpp
         libraries/imgui/imgui.cpp
         libraries/imgui/imgui_demo.cpp
         libraries/imgui/imgui_draw.cpp
@@ -35,7 +36,7 @@ add_executable(votre_projet
 # Lier les librairies dynamiques SDL + PortAudio
 target_link_libraries(votre_projet PRIVATE
         SDL3
-        portaudio_x64       # ✅ nom du .lib sans extension
+        portaudio_x64       #  nom du .lib sans extension
 )
 
 # Copier automatiquement les DLL après compilation

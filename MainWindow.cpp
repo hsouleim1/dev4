@@ -50,6 +50,8 @@ void MainWindow::run() {
         AudioGenerator::getInstance().setEnvelope(attack, release);
         AudioGenerator::getInstance().setCutoff(cutoff);
         AudioGenerator::getInstance().setResonance(resonance);
+        AudioGenerator::getInstance().setDelayTime(delayTime);
+        AudioGenerator::getInstance().setDelayMix(delayMix);
 
         if (noteActive) {
             auto now = std::chrono::steady_clock::now();
@@ -89,7 +91,7 @@ void MainWindow::run() {
         ImGui::SliderFloat("##resonance", &resonance, 0, 1, "%.2f");
 
         ImGui::Text("Delay Time");
-        ImGui::SliderFloat("##delayTime", &delayTime, 0.1f, 2.0f, "%.2f");
+        ImGui::SliderFloat("##delayTime", &delayTime, 0.0f, 2.0f, "%.2f");
         ImGui::Text("Delay Mix");
         ImGui::SliderFloat("##delayMix", &delayMix, 0, 1, "%.2f");
 
