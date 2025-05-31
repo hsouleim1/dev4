@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 23)
 
 # Inclure les headers
 include_directories(
+        ${CMAKE_SOURCE_DIR}/include
         ${CMAKE_SOURCE_DIR}/libraries/imgui
         ${CMAKE_SOURCE_DIR}/libraries/imgui/backends
         ${CMAKE_SOURCE_DIR}/libraries/sdl/include
@@ -18,12 +19,13 @@ link_directories(
 
 # Fichiers sources
 add_executable(votre_projet
-        main.cpp
-        MainWindow.cpp
-        AudioGenerator.cpp
-        Oscillator.cpp
-        Filter.cpp
-        Delay.cpp
+        src/main.cpp
+        src/MainWindow.cpp
+        src/AudioGenerator.cpp
+        src/Oscillator.cpp
+        src/Filter.cpp
+        src/Delay.cpp
+        src/Envelope.cpp
         libraries/imgui/imgui.cpp
         libraries/imgui/imgui_demo.cpp
         libraries/imgui/imgui_draw.cpp
